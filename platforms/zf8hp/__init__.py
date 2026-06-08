@@ -5,7 +5,7 @@ Vehicles: Audi A6/A7 C7, A8 D4, Q5 8R, A4/A5 B8/B9.
 
 Two encryption schemes exist:
   - Method 0x22 (XOR + LZZ): 4G0, 4H1 families — CRACKED
-  - Method 0x01 (AES, no compress): 8K0 family — key unknown
+  - Method 0x01 (byte-level, not AES): 8K0 family — key unknown
 """
 
 from core.crypto_xor import XORBlockCrypto
@@ -16,10 +16,12 @@ from core.crypto_xor import XORBlockCrypto
 XOR_KEY = b"CyA2008ZFVAGtcuxsam"
 XOR_CRYPTO = XORBlockCrypto(XOR_KEY)
 
-# --- Method 0x01 Crypto (AES) ---
+# --- Method 0x01 Crypto (byte-level, NOT AES) ---
 # Used by 8K0 (A4/A5 B8) family.  Key UNKNOWN.
-# Not among any of the 7 known VW Group AES keys.
-AES_CRYPTO = None
+# Differential analysis confirms byte-level processing (mid-block transitions),
+# ruling out AES.  Not a short repeating XOR either (no low-entropy windows).
+# Requires raw flash dump from any 8K0 TCU to recover.
+METHOD_01_CRYPTO = None
 
 # --- SA2 Scripts ---
 SA2_4G0 = bytes.fromhex(

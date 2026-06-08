@@ -44,12 +44,24 @@ Hex: 437941323030385a465641477463757873616d
 - Confirmed working on 4H1927158AD (A8 D4 8HP90)
 - Applies to: 4G0 (A6/A7 C7, 289 FRFs) + 4H1 (A8 D4, 116 FRFs) = 400+ FRFs
 
-### Method 0x01 — AES (key UNKNOWN)
+### Method 0x01 — Byte-level cipher (key UNKNOWN)
 
 - Used by 8K0 family (A4/A5 B8)
 - No LZSS/LZZ compression (compressed = uncompressed size)
+- **NOT AES**: differential analysis of 3 FRFs (AA_0003, AA_0004, AF_0003)
+  shows mid-block transitions in XOR result — AES avalanche effect would
+  prevent this.  Confirmed byte-level processing (XOR, stream cipher, or
+  substitution table)
+- Not a short repeating XOR: no low-entropy windows in 1.2MB ciphertext
+  (unlike method 0x22 which is trivially detectable)
+- Same key across all 8K0 variants: first 128KB (0x20000) ciphertext is
+  identical across AA and AF hardware suffixes
+- First plaintext difference at offset 0x02000F (clean 128KB boundary —
+  BOOT/ASW split)
 - All 7 known VW Group AES keys tested — none match
-- Separate from method 0x22 key (ZF uses different crypto per generation)
+- CYA naming convention brute force tested — no match
+- **Requires raw flash dump** from any 8K0 TCU to recover key via
+  XOR against known ciphertext
 
 ## FRF Container
 

@@ -14,7 +14,7 @@ Built to give back to the community that made this research possible.
 | **DQ381.2** BL301 | MK8 GTI, Golf R, 8Y S3, Tiguan | AES-128-CBC | ✅ Extractable |
 | **DQ381.2** BL401 | 2022+ MK8 GTI/R, S3 | AES-128-CBC | ⚠️ Key unknown |
 | **ZF 8HP** method 22 | A6/A7 C7, A8 D4 | 19-byte XOR | ✅ Extractable |
-| **ZF 8HP** method 01 | A4/A5 B8 | AES-128-CBC | ⚠️ Key unknown |
+| **ZF 8HP** method 01 | A4/A5 B8 | Byte-level (not AES) | ⚠️ Key unknown |
 
 The same SH72549 MCU is also found in ZF 8HP45/50/55/70/75/90/95 across
 BMW, Alfa Romeo, Dodge/Ram, Jeep, Maserati, Rolls Royce, and Aston Martin.
