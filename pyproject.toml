@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vag-flash-tools"
+name = "vag-tcu-tools"
 version = "0.3.0"
 description = "Multi-platform VAG transmission firmware toolkit (DQ381, ZF 8HP)"
 requires-python = ">=3.10"
