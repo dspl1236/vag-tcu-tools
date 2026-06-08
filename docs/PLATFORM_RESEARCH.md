@@ -107,6 +107,13 @@ and unlock mechanisms.
 
 ---
 
+## Reference Documents
+
+- **Renesas SH7254R Hardware Manual** — Document R01UH0480EJ0400 (1,848 pages)
+- **Renesas SH-2A/SH2A-FPU Programming Manual** — Document REJ09B0051
+
+Search these document numbers on the Renesas website or engineering archives.
+
 ## Boot Mode Protocol (SH72549, all platforms)
 
 Source: Renesas SH7254R Hardware Manual, Section 25.5

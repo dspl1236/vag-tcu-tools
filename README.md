@@ -133,8 +133,9 @@ DQ381, ZF 8HP, Simos ECU keys, SA2 scripts, and the FRF container key.
 The SH72549 hardware boot mode (shared by DQ381 and all ZF 8HP variants)
 uses SCI serial on pins PJ5/PJ6 with a key code authentication step.
 Full protocol documented in
-**[docs/PLATFORM_RESEARCH.md](docs/PLATFORM_RESEARCH.md)** from the
-Renesas SH7254R Hardware Manual.
+**[docs/PLATFORM_RESEARCH.md](docs/PLATFORM_RESEARCH.md)** based on the
+Renesas SH7254R Hardware Manual (R01UH0480EJ0400) and SH-2A Programming
+Manual (REJ09B0051).
 
 ## Contributing
 
