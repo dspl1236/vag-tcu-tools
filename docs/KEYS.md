@@ -122,11 +122,11 @@ bytecode programs for a tiny VM.  See bri3d/sa2_seed_key.
 | ZF 8HP AL551/ALX510 | `6805824A10680284100819734A05872506200382499318111973824A058712082001824A0181494C` |
 | ZF 8HP ALX520/AL552 | `680893231003DE4A0B680E814987FA2515786B096804824987BF72D54849845A23F1974C` |
 
-Sources: bri3d/VW_Flash, dspl1236/simos-suite, FRF ODX extraction.
+Sources: bri3d/VW_Flash, community UDS scans, FRF ODX extraction.
 
 ## Simos ECU Keys (reference)
 
-From bri3d/VW_Flash and dspl1236/simos-suite:
+From bri3d/VW_Flash and community research:
 
 | Platform | Key | IV |
 |---|---|---|
