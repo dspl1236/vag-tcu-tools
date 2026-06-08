@@ -44,24 +44,19 @@ Hex: 437941323030385a465641477463757873616d
 - Confirmed working on 4H1927158AD (A8 D4 8HP90)
 - Applies to: 4G0 (A6/A7 C7, 289 FRFs) + 4H1 (A8 D4, 116 FRFs) = 400+ FRFs
 
-### Method 0x01 — Byte-level cipher (key UNKNOWN)
+### ~~Method 0x01~~ — NOT ZF 8HP (CORRECTED)
 
-- Used by 8K0 family (A4/A5 B8)
-- No LZSS/LZZ compression (compressed = uncompressed size)
-- **NOT AES**: differential analysis of 3 FRFs (AA_0003, AA_0004, AF_0003)
-  shows mid-block transitions in XOR result — AES avalanche effect would
-  prevent this.  Confirmed byte-level processing (XOR, stream cipher, or
-  substitution table)
-- Not a short repeating XOR: no low-entropy windows in 1.2MB ciphertext
-  (unlike method 0x22 which is trivially detectable)
-- Same key across all 8K0 variants: first 128KB (0x20000) ciphertext is
-  identical across AA and AF hardware suffixes
-- First plaintext difference at offset 0x02000F (clean 128KB boundary —
-  BOOT/ASW split)
-- All 7 known VW Group AES keys tested — none match
-- CYA naming convention brute force tested — no match
-- **Requires raw flash dump** from any 8K0 TCU to recover key via
-  XOR against known ciphertext
+8K0927155 (A4/A5 B8) was initially classified as ZF 8HP but is actually
+**VL381 Multitronic CVT** on Infineon TriCore TC1766:
+
+- ODX ECU variant: `EV_TCMVL381_A01` (not ZF 8HP)
+- Firmware strings: `VL381 Tricore 1766`, `EV_TCMVL381`
+- Confirmed from bench flash dump (8K0927155AF, 0x180000 bytes)
+- Same TriCore platform as DL501 (see below)
+- Uses trivial AES key `000102...0F` at flash offset ~0x05F000
+
+The actual ZF 8HP in the A4/A5 B8 (quattro models) uses different part
+numbers.  All confirmed ZF 8HP FRFs (4G0, 4H1) use method 0x22 (XOR).
 
 ## DL501 / VL381 (Borg Warner, TriCore — reference only)
 
