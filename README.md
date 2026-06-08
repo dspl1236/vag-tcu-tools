@@ -14,16 +14,16 @@ Built to give back to the community that made this research possible.
 | **DQ381.2** BL301 | MK8 GTI, Golf R, 8Y S3, Tiguan | AES-128-CBC | ✅ Extractable |
 | **DQ381.2** BL401 | 2022+ MK8 GTI/R, S3 | AES-128-CBC | ⚠️ Key unknown |
 | **ZF 8HP** method 22 | A6/A7 C7, A8 D4 | 19-byte XOR | ✅ Extractable |
+| **ZF 8HP** method AA | Q7/Q8 4M (ALX520) | AES-128-CBC | ⚠️ Key unknown |
 
 **Note:** Several Audi transmission part numbers were initially assumed to be
-ZF 8HP but are actually different platforms:
-- 8K0927155 = VL381 Multitronic CVT (TriCore TC1766)
-- 8R0927156 = DL501 S-Tronic 7-speed
-- 8W0927155 = DL-382 7-speed
-- 4K0927153 = DSG/S-Tronic 7-speed
-- 4M0927158 = 0BK torque converter auto
+ZF 8HP but are actually different platforms (verified via ODX ECU variant):
+- 8K0927155 = VL381 Multitronic CVT (EV_TCMVL381, TriCore TC1766)
+- 8R0927156 = DL501 S-Tronic 7-speed (EV_TCMDL501)
+- 8W0927155 = DL-382 7-speed (EV_TCMDL382021)
+- 4K0927153 = DL-382 7-speed (EV_TCMDL382021)
 
-Only 4G0927158 (A6/A7 C7) and 4H1927158 (A8 D4) are confirmed ZF 8HP.
+Confirmed ZF 8HP: 4G0927158 (AL551), 4H1927158 (ALX510), 4M0927158 (ALX520).
 
 The same SH72549 MCU is also found in ZF 8HP45/50/55/70/75/90/95 across
 BMW, Alfa Romeo, Dodge/Ram, Jeep, Maserati, Rolls Royce, and Aston Martin.
