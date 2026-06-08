@@ -1,22 +1,21 @@
-"""ZF 8HP (AL551/ALX510/ALX520) platform configuration.
+"""ZF 8HP (AL551/ALX510/ALX520/AL552) platform configuration.
 
 ZF TCU on Renesas SH72549 (SH-2A, big-endian).
 Gen3 (post-2020) moved to Infineon TC275 TriCore — not covered here.
 
 Two encryption schemes exist on SH72549:
-  - Method 0x22 (XOR + LZZ): 4G0, 4H1 families — CRACKED
-  - Method 0xAA (AES-CBC + LZSS): 4M0 family — key UNKNOWN
+  - Method 0x22 (XOR + LZZ): 4G0, 4H1 — CRACKED
+  - Method 0xAA (AES-CBC + LZSS): 4M0, 8W0 — key UNKNOWN
 
 Confirmed vehicles:
   4G0927158 — A6/A7 C7 (AL551/8HP55), method 0x22
   4H1927158 — A8 D4 (ALX510/8HP90), method 0x22
-  4M0927158 — Q7/Q8 4M (ALX520/8HP), method 0xAA
+  4M0927158 — Q7/Q8 4M (ALX520), method 0xAA
+  8W0927158 — B9 S4/S5/SQ5/RS4/RS5 (AL552), method 0xAA
 
-Note: Many Audi transmission part numbers are NOT ZF 8HP:
-  8K0927155 = VL381 Multitronic CVT (TriCore TC1766)
-  8R0927156 = DL501 S-Tronic 7-speed (EV_TCMDL501)
-  8W0927155 = DL-382 7-speed (EV_TCMDL382021)
-  4K0927153 = DL-382 7-speed (EV_TCMDL382021)
+4M0 and 8W0 share ODX variant EV_TCMALX52011 — same key unlocks both.
+
+Note: 8W0927155 (DL-382) vs 8W0927158 (AL552) — different transmissions!
 """
 
 from core.crypto_xor import XORBlockCrypto
@@ -54,16 +53,20 @@ CAN_RX = 0x7E9
 # --- Part Number Families ---
 FAMILIES = {
     "4G0927158": "A6/A7 C7 AL551 (8HP55)",    # method 0x22 XOR, CONFIRMED
-    "4H1927158": "A8 D4 ALX51 (8HP90)",        # method 0x22 XOR, CONFIRMED
+    "4H1927158": "A8 D4 ALX510 (8HP90)",       # method 0x22 XOR, CONFIRMED
     "4M0927158": "Q7/Q8 4M ALX520 (8HP)",      # method 0xAA AES, key UNKNOWN
+    "8W0927158": "B9 S4/S5/RS4/RS5 AL552",     # method 0xAA AES, same key as 4M0
 }
 
-# NOT ZF 8HP — confirmed different platforms:
-# "8K0927155" = VL381 Multitronic CVT (TriCore TC1766, method 0x01)
+# 4M0 and 8W0 share ODX variant EV_TCMALX52011_002 — same platform,
+# same AES key, same BOOT block.  AL552 is the community/tuner name;
+# ODX uses ALX52011 for both.
+
+# NOT ZF 8HP — confirmed different platforms (verified via ODX):
+# "8K0927155" = VL381 Multitronic CVT (EV_TCMVL381, TriCore TC1766)
 # "8R0927156" = DL501 S-Tronic 7-speed (EV_TCMDL501, method 0x11)
-# "8W0927155" = DL-382 7-speed (EV_TCMDL382021, method 0x11)
+# "8W0927155" = DL-382 7-speed (EV_TCMDL382021, method 0x11)  ← note 155 not 158!
 # "4K0927153" = DL-382 7-speed (EV_TCMDL382021, method 0x1A)
-# "4M0927158" 0xAA variant = same SH72549 MCU, newer bootloader with AES
 
 # --- ZF 8HP Variants (all SH72549) ---
 ZF_VARIANTS = {

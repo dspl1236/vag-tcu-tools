@@ -46,26 +46,24 @@ Hex: 437941323030385a465641477463757873616d
 
 ### Method 0xAA — AES-128-CBC + LZSS (key UNKNOWN)
 
-Used by 4M0927158 (Q7/Q8 4M, ALX520).  Same SH72549 MCU as method 0x22
-variants, but newer bootloader using Bosch standard AES encryption (same
-scheme as DQ381 BL301, method code 0xAA).
+Used by 4M0927158 (Q7/Q8 4M) and 8W0927158 (B9 S4/S5/SQ5/RS4/RS5).
+Both share ODX variant `EV_TCMALX52011_002` — same platform, same key.
+Community names: ALX520 (Q7/Q8) and AL552 (B9 S/RS) = same hardware.
 
-- ODX ECU variant: `EV_TCMALX52011_002`
+Same SH72549 MCU as method 0x22 variants, but newer bootloader using
+Bosch standard AES encryption (same scheme as DQ381 BL301).
+
 - 5 flash blocks, all 16-byte aligned (AES)
-- Cross-variant XOR confirms same key across D and AA hardware suffixes
-- FD_05 (16,160 bytes) is byte-identical across variants (shared block)
+- Cross-variant XOR confirms same key across 4M0 and 8W0 families
+- FD_05 (16,160 bytes) is byte-identical across all variants
+- FD_03 (BOOT, 120,240 bytes) same size and first 16 bytes across all
 - SA2 script: `680893231003DE4A0B680E814987FA2515786B09...`
 - Neither BL301 trivial key nor CyA XOR key works
 - AES key likely at similar BOOT offset as DQ381 (bench read needed)
+- ~58 FRFs total: 4M0 (~33) + 8W0 (25)
 
-Block layout (4M0927158D_1008):
-```
-FD_01 (ASW):  1,281,744 bytes
-FD_02 (meta):       992 bytes
-FD_03 (BOOT):   120,240 bytes
-FD_04 (CAL):    168,384 bytes
-FD_05 (shared):  16,160 bytes
-```
+Note: 8W0927**155** = DL-382 (EV_TCMDL382021, different transmission!)
+      8W0927**158** = AL552/ALX520 (EV_TCMALX52011, ZF 8HP)
 
 ### ~~Method 0x01~~ — NOT ZF 8HP (CORRECTED)
 
