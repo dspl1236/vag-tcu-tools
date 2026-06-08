@@ -15,10 +15,15 @@ Built to give back to the community that made this research possible.
 | **DQ381.2** BL401 | 2022+ MK8 GTI/R, S3 | AES-128-CBC | ⚠️ Key unknown |
 | **ZF 8HP** method 22 | A6/A7 C7, A8 D4 | 19-byte XOR | ✅ Extractable |
 
-**Note:** 8K0927155 (A4/A5 B8) was initially assumed to be ZF 8HP but is
-actually **VL381 Multitronic CVT** on TriCore TC1766 — a completely different
-platform.  ODX identifies it as `EV_TCMVL381_A01`.  Confirmed from bench
-flash dump showing `VL381 Tricore 1766` in firmware strings.
+**Note:** Several Audi transmission part numbers were initially assumed to be
+ZF 8HP but are actually different platforms:
+- 8K0927155 = VL381 Multitronic CVT (TriCore TC1766)
+- 8R0927156 = DL501 S-Tronic 7-speed
+- 8W0927155 = DL-382 7-speed
+- 4K0927153 = DSG/S-Tronic 7-speed
+- 4M0927158 = 0BK torque converter auto
+
+Only 4G0927158 (A6/A7 C7) and 4H1927158 (A8 D4) are confirmed ZF 8HP.
 
 The same SH72549 MCU is also found in ZF 8HP45/50/55/70/75/90/95 across
 BMW, Alfa Romeo, Dodge/Ram, Jeep, Maserati, Rolls Royce, and Aston Martin.

@@ -1,13 +1,17 @@
 """ZF 8HP (AL551/AL552) platform configuration.
 
 ZF TCU on Renesas SH72549 (SH-2A, big-endian).
-Vehicles: Audi A6/A7 C7, A8 D4, Q5 8R, A4/A5 B9.
+Confirmed vehicles: Audi A6/A7 C7 (8HP55), A8 D4 (8HP90).
 
 Encryption: Method 0x22 — 19-byte repeating XOR + LZZ compression.
 Key: CyA2008ZFVAGtcuxsam (CRACKED, verified)
 
-Note: 8K0927155 (A4/A5 B8) is NOT ZF 8HP — it is VL381 Multitronic CVT
-on TriCore TC1766, a completely different platform.
+Note: Many Audi transmission part numbers are NOT ZF 8HP:
+  8K0927155 = VL381 Multitronic CVT (TriCore TC1766)
+  8R0927156 = DL501 S-Tronic 7-speed
+  8W0927155 = DL-382 7-speed
+  4K0927153 = DSG/S-Tronic 7-speed
+  4M0927158 = 0BK torque converter auto
 """
 
 from core.crypto_xor import XORBlockCrypto
@@ -46,16 +50,14 @@ CAN_RX = 0x7E9
 FAMILIES = {
     "4G0927158": "A6/A7 C7 AL551 (8HP55)",    # method 0x22, CONFIRMED
     "4H1927158": "A8 D4 ALX51 (8HP90)",        # method 0x22, CONFIRMED
-    "8R0927156": "Q5 8R (8HP55)",              # unverified method
-    "8W0927155": "A4/A5 B9 (8HP55)",           # unverified method
-    "4K0927153": "A6/A7 C8 (8HP51)",           # unverified method
-    "4M0927158": "Q7/Q8 4M (8HP)",             # unverified method
 }
 
 # NOT ZF 8HP — confirmed different platforms:
 # "8K0927155" = VL381 Multitronic CVT (TriCore TC1766, method 0x01)
-#   ODX identifies as EV_TCMVL381_A01, NOT ZF 8HP
-#   Same platform as DL501 (TriCore, trivial AES key at ~0x05F000)
+# "8R0927156" = DL501 S-Tronic 7-speed (TriCore)
+# "8W0927155" = DL-382 7-speed
+# "4K0927153" = DSG/S-Tronic 7-speed
+# "4M0927158" = 0BK torque converter auto
 
 # --- ZF 8HP Variants (all SH72549) ---
 ZF_VARIANTS = {
