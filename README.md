@@ -152,7 +152,8 @@ Manual (REJ09B0051).
 
 This project exists because people shared what they knew.  If you have:
 - A raw bench read from any BL401 DQ381 TCU (32 bytes at `0x010544` = the key)
-- Encryption keys for other VAG TCU platforms (DQ500, DL501, DL382)
+- A raw bench read from any ZF 8HP ALX520/AL552 TCU (Q7/Q8 or B9 S4/S5/RS4/RS5)
+- Encryption keys for other VAG TCU platforms (DQ500, DQ250, DL382)
 - Calibration address maps or A2L/DAMOS definitions
 - Corrections to anything documented here
 
