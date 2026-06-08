@@ -63,6 +63,24 @@ Hex: 437941323030385a465641477463757873616d
 - **Requires raw flash dump** from any 8K0 TCU to recover key via
   XOR against known ciphertext
 
+## DL501 / VL381 (Borg Warner, TriCore — reference only)
+
+**Not in scope for this repo** (TriCore TC1766, not SH72549), but
+documented here for community reference.
+
+```
+Key: 000102030405060708090A0B0C0D0E0F (same trivial key as DQ381 BL301)
+Location: flash offset 0x05E674 (confirmed from bench read)
+MCU: Infineon TriCore TC1766
+Platform: "VL381 Tricore 1766"
+Flash size: 0x180000 (1,572,864 bytes)
+```
+
+- Same trivial sequential AES key as DQ381 BL301 — suggests this was a
+  common Bosch default across multiple VAG transmission families
+- BCM2 pairing uses Renesas 70F3380 (V850 family) with WFS5 immobilizer
+- EEPROM: 8,192 bytes (0x2000)
+
 ## FRF Container
 
 All VAG flashdaten .frf files share the same container encryption:
