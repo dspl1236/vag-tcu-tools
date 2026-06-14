@@ -65,19 +65,40 @@ Bosch standard AES encryption (same scheme as DQ381 BL301).
 Note: 8W0927**155** = DL-382 (EV_TCMDL382021, different transmission!)
       8W0927**158** = AL552/ALX520 (EV_TCMALX52011, ZF 8HP)
 
-### ~~Method 0x01~~ — NOT ZF 8HP (CORRECTED)
+### Method 0x01 — 256-byte Permutation Table Cipher (key/table UNKNOWN)
 
-8K0927155 (A4/A5 B8) was initially classified as ZF 8HP but is actually
-**VL381 Multitronic CVT** on Infineon TriCore TC1766:
+Used by: DL381 (0AW), VL381 Multitronic CVT (8K0927155), and others.
 
-- ODX ECU variant: `EV_TCMVL381_A01` (not ZF 8HP)
-- Firmware strings: `VL381 Tricore 1766`, `EV_TCMVL381`
+**Cipher algorithm** (confirmed by community RE — gremlin @ NefMoto, June 2026):
+- 256-byte lookup table (values 0-255 in swapped order)
+- Add/shift operations — NOT XOR, NOT AES
+- Different table per TCU family (DL381 ≠ DL501)
+
+8K0927155 (A4/A5 B8) was initially misclassified as ZF 8HP but is actually
+VL381 Multitronic CVT on Infineon TriCore TC1766:
+- ODX ECU variant: `EV_TCMVL381_A01`
 - Confirmed from bench flash dump (8K0927155AF, 0x180000 bytes)
-- Same TriCore platform as DL501 (see below)
-- Uses trivial AES key `000102...0F` at flash offset ~0x05F000
 
-The actual ZF 8HP in the A4/A5 B8 (quattro models) uses different part
-numbers.  All confirmed ZF 8HP FRFs (4G0, 4H1) use method 0x22 (XOR).
+### Method 0x11 — Same Table Cipher + Compression
+
+Used by: DQ200, DQ250, DQ400, DL501, DL382.
+Same 256-byte permutation table algorithm as method 0x01 but with
+additional compression layer on top.
+
+### Warning: Method 0xAA "Fake" Variants
+
+**DL800** (Audi R8 / Lamborghini Huracan DCT) reports method 0xAA in ODX
+but actually uses the same table cipher as 0x01/0x11 — NOT real AES.
+Do not assume all method 0xAA blocks are AES-128-CBC.
+
+Real AES (method 0xAA) can be confirmed by checking block size alignment:
+- AES blocks are always 16-byte aligned
+- Table cipher blocks are NOT necessarily 16-byte aligned
+
+Confirmed real AES method 0xAA: DQ381, ZF ALX520/AL552 (both 16B-aligned).
+Confirmed fake 0xAA: DL800 (R8/Huracan).
+
+Source: gremlin (NefMoto), June 2026.
 
 ## DL501 / VL381 (Borg Warner, TriCore — reference only)
 

@@ -86,13 +86,20 @@ and unlock mechanisms.
 **Variants (TC275/TriCore era — covered by TriCoreTool):**
 - 8HP51, 8HP76: BMW/JLR/Porsche (post-2020)
 
-**ZF 8HP Crypto:**
-- FRF container: same recursive XOR cipher (same frf.key) ✓
-- ODX format: standard VW Group ODX ✓
-- Flash blocks: AES-128-CBC with **UNKNOWN ZF key**
-- ODX method: `01` (encryption type 1 + no compression)
-- No LZSS compression (compressed size = uncompressed size)
-- Tested all known VW Group AES keys (Simos8/10/12/16/18, DQ381) — NONE work
+**ZF 8HP Crypto — Updated with community RE findings:**
+
+Method 0x22 (AL551/ALX510 — 4G0, 4H1):
+- 19-byte repeating XOR key `CyA2008ZFVAGtcuxsam` — CRACKED ✅
+- LZZ compression (inverted flags, 5-bit count, 11-bit displacement)
+
+Method 0xAA (ALX520/AL552 — 4M0, 8W0):
+- Real AES-128-CBC (confirmed: 16-byte aligned blocks)
+- Key UNKNOWN — bench read needed
+
+**Warning — Other platform methods explained (gremlin @ NefMoto, June 2026):**
+Method 0x01 (DL381/VL381): 256-byte permutation table + add/shift algo, NOT XOR
+Method 0x11 (DQ200/DQ250/DQ400/DL501/DL382): same table algo + compression
+Method 0xAA "fake" (DL800 R8/Huracan): table cipher despite 0xAA marking
 
 **Audi Flashdaten Corpus:**
 - 1,365 ZF 8HP TCU FRFs across all longitudinal Audi platforms
