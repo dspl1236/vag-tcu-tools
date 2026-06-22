@@ -79,26 +79,33 @@ VL381 Multitronic CVT on Infineon TriCore TC1766:
 - ODX ECU variant: `EV_TCMVL381_A01`
 - Confirmed from bench flash dump (8K0927155AF, 0x180000 bytes)
 
-### Method 0x11 — Same Table Cipher + Compression
+### Method 0x11 — Same Table Cipher + LZZ Compression
 
-Used by: DQ200, DQ250, DQ400, DL501, DL382.
-Same 256-byte permutation table algorithm as method 0x01 but with
-additional compression layer on top.
+Used by: DQ200, DQ250, DQ400, DL501, DL382, and some DL800 (4T0 Huracan).
+Same 256-byte permutation table algorithm as method 0x01 with LZZ compression
+on top (same LZZ format as ZF 8HP method 0x22).
 
-### Warning: Method 0xAA "Fake" Variants
+**Warning — Fake 0x11 variant (verified from flashdaten, June 2026):**
+Some DL800 / DQ500 units (4S0927155xx, Audi R8) report method `0x11` in ODX
+but actually use AES decryption.
 
-**DL800** (Audi R8 / Lamborghini Huracan DCT) reports method 0xAA in ODX
-but actually uses the same table cipher as 0x01/0x11 — NOT real AES.
-Do not assume all method 0xAA blocks are AES-128-CBC.
+Confirmed from FRF analysis of FL_4S0927155B__3504 and FL_4S0927155S__6001:
+- ODX variant: `EV_TCMDL800041` + `EV_TCMDQ500021`
+- Method tag: `11` in ODX
+- Block alignment: **16-byte aligned** → real AES (not table cipher)
+- Entropy: 7.95+ (AES-level)
+- FD_2 IV identical across variants → same AES key across R8 family
 
-Real AES (method 0xAA) can be confirmed by checking block size alignment:
-- AES blocks are always 16-byte aligned
-- Table cipher blocks are NOT necessarily 16-byte aligned
+Diagnostic: use block size alignment to distinguish real 0x11 from fake 0x11:
+```
+16-byte aligned  →  AES (fake 0x11 tag)
+NOT 16B aligned  →  Table cipher (real 0x11)
+```
 
-Confirmed real AES method 0xAA: DQ381, ZF ALX520/AL552 (both 16B-aligned).
-Confirmed fake 0xAA: DL800 (R8/Huracan).
+Known fake 0x11 (real AES): 4S0927155xx (Audi R8, DL800/DQ500 combined ODX)
+Known real 0x11 (table + LZZ): 4T0927109x (Lamborghini Huracan) — not in Audi flashdaten
 
-Source: gremlin (NefMoto), June 2026.
+Source: gremlin (NefMoto) + verified from Audi flashdaten, June 2026.
 
 ## DL501 / VL381 (Borg Warner, TriCore — reference only)
 
