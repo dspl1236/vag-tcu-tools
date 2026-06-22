@@ -58,10 +58,13 @@ Applies to (Bentley flashdaten — confirmed):
 - 4W0927158 — Bentayga (EV_TCMAL450211)
 - 3Y0927158 — Flying Spur (EV_TCMALX51011)
 
-Note: AL450 (EV_TCMAL450211) is a ZF 8HP variant found only in Bentley
-flashdaten — same XOR key, same LZZ format as AL551/ALX510.
+Applies to (VW flashdaten — confirmed):
+- 2H0927158 — Touareg (EV_TCMAL450211)
 
-Total method 0x22 coverage: ~560 FRFs across Audi + Bentley.
+Note: AL450 (EV_TCMAL450211) covers Bentley Continental GT/GTC/Bentayga
+and VW Touareg — same XOR key, same LZZ format as AL551/ALX510.
+
+Total method 0x22 coverage: ~580 FRFs across Audi + Bentley + VW.
 
 **Critical part number traps:**
 ```
@@ -76,7 +79,7 @@ Total method 0x22 coverage: ~560 FRFs across Audi + Bentley.
 
 Used by 4M0927158 (Q7/Q8 4M), 8W0927158 (B9 S4/S5/SQ5/RS4/RS5),
 36A927158 (Bentley Bentayga older), 4M8927158 (SQ8/RS Q8),
-4N0927158 (Q8/A7 C8), and 80A927158 (Q5 FY).
+4N0927158 (Q8/A7 C8), 80A927158 (Q5 FY), and 760927158 (Porsche Cayenne).
 All confirmed EV_TCMALX52011_002 via ODX — same platform, same AES key.
 
 Same SH72549 MCU as method 0x22 variants, but newer bootloader using
@@ -141,14 +144,15 @@ a combined DL800+DQ500 file, not a pure DL800 image.
 
 Source: gremlin (NefMoto) + verified from Audi + Lamborghini flashdaten, June 2026.
 
-### Method 0xA0 — UNKNOWN (Bentley 3SD/3SE)
+### Method 0xA0 — UNKNOWN (multiple platforms)
 
-Used by: 3SD927155/158 and 3SE927153/155/158 (Bentley Flying Spur/Continental).
-Blocks NOT 16-byte aligned, entropy 5.3–6.5 (lower than AES — may be
-compressed plaintext or a different cipher).  No ODX ECU variant found —
-these FRFs may use a proprietary Bentley format.
+Used by:
+- 3SD/3SE927158 — Bentley (EV_TCM variant absent)
+- 09G927158 — VW/Seat/Skoda (EV_TCMAQ250031) — likely Aisin AQ250 6-speed auto
+- 09S927158 — VW/Skoda (EV_TCMAQ300031) — likely Aisin AQ300
 
-Nothing further known.  Not related to any Audi/VW encryption method.
+Blocks NOT consistently 16-byte aligned, entropy 5.3–6.5.
+Different suppliers/formats — nothing further known.
 
 ## DL501 / VL381 (Borg Warner, TriCore — reference only)
 
