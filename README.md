@@ -13,8 +13,8 @@ Built to give back to the community that made this research possible.
 |---|---|---|---|
 | **DQ381.2** BL301 | MK8 GTI, Golf R, 8Y S3, Tiguan | AES-128-CBC | ✅ Extractable |
 | **DQ381.2** BL401 | 2022+ MK8 GTI/R, S3 | AES-128-CBC | ⚠️ Key unknown |
-| **ZF 8HP** method 22 | A6/A7 C7, A8 D4 | 19-byte XOR | ✅ Extractable |
-| **ZF 8HP** method AA | Q7/Q8, B9 S4/S5/RS4/RS5 | AES-128-CBC | ⚠️ Key unknown |
+| **ZF 8HP** method 22 | A6/A7 C7, A8 D4; Continental GT/GTC, Bentayga, Flying Spur | 19-byte XOR | ✅ Extractable |
+| **ZF 8HP** method AA | Q7/Q8, B9 S4/S5/RS4/RS5; Bentayga (36A) | AES-128-CBC | ⚠️ Key unknown |
 
 **Note:** Several Audi transmission part numbers were initially assumed to be
 ZF 8HP but are actually different platforms (verified via ODX ECU variant):
@@ -25,7 +25,8 @@ ZF 8HP but are actually different platforms (verified via ODX ECU variant):
 
 Confirmed ZF 8HP families:
 - 4G0927158 (AL551), 4H1927158 (ALX510) — method 0x22 XOR, cracked
-- 4M0927158 (ALX520), 8W0927**158** (AL552) — method 0xAA AES, same key
+- 3W0/3W3/4W0/3Y0927158 (AL450/ALX510 Bentley) — method 0x22 XOR, same key ✅
+- 4M0927158 (ALX520), 8W0927**158** (AL552), 36A927158 (Bentayga) — method 0xAA AES, same key
 
 The same SH72549 MCU is also found in ZF 8HP45/50/55/70/75/90/95 across
 BMW, Alfa Romeo, Dodge/Ram, Jeep, Maserati, Rolls Royce, and Aston Martin.

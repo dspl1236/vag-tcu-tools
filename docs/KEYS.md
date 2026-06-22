@@ -42,13 +42,27 @@ Hex: 437941323030385a465641477463757873616d
 - Compression: LZZ (inverted flags, 5-bit count + 11-bit displacement, 2047 window)
 - Verified on 4G0927158BE (A6/A7 C7, 1,310,208 bytes PERFECT MATCH)
 - Confirmed working on 4H1927158AD (A8 D4 8HP90)
-- Applies to: 4G0 (A6/A7 C7, 289 FRFs) + 4H1 (A8 D4, 116 FRFs) = 400+ FRFs
+
+Applies to (Audi flashdaten):
+- 4G0927158 — A6/A7 C7 (EV_TCMAL551211, 289 FRFs)
+- 4H1927158 — A8 D4 (EV_TCMALX51011, 116 FRFs)
+
+Applies to (Bentley flashdaten — **confirmed, same key, June 2026**):
+- 3W0927158 — Continental GT (EV_TCMAL450211, ~11 FRFs)
+- 3W3927158 — Continental GTC (EV_TCMAL450211, ~15 FRFs)
+- 4W0927158 — Bentayga (EV_TCMAL450211, ~13 FRFs)
+- 3Y0927158 — Flying Spur/Mulsanne (EV_TCMALX51011, ~14 FRFs)
+
+Note: AL450 (EV_TCMAL450211) is a ZF 8HP variant found only in Bentley
+flashdaten — same XOR key, same LZZ compression, new ODX variant name.
+
+Total method 0x22 coverage: ~460 FRFs across Audi + Bentley.
 
 ### Method 0xAA — AES-128-CBC + LZSS (key UNKNOWN)
 
-Used by 4M0927158 (Q7/Q8 4M) and 8W0927158 (B9 S4/S5/SQ5/RS4/RS5).
-Both share ODX variant `EV_TCMALX52011_002` — same platform, same key.
-Community names: ALX520 (Q7/Q8) and AL552 (B9 S/RS) = same hardware.
+Used by 4M0927158 (Q7/Q8 4M), 8W0927158 (B9 S4/S5/SQ5/RS4/RS5),
+and 36A927158 (Bentley Bentayga older).
+All share ODX variant `EV_TCMALX52011_002` — same platform, same key.
 
 Same SH72549 MCU as method 0x22 variants, but newer bootloader using
 Bosch standard AES encryption (same scheme as DQ381 BL301).
@@ -111,6 +125,15 @@ Note: R8 FRFs carry both EV_TCMDL800041 and EV_TCMDQ500021 in ODX —
 a combined DL800+DQ500 file, not a pure DL800 image.
 
 Source: gremlin (NefMoto) + verified from Audi + Lamborghini flashdaten, June 2026.
+
+### Method 0xA0 — UNKNOWN (Bentley 3SD/3SE)
+
+Used by: 3SD927155/158 and 3SE927153/155/158 (Bentley Flying Spur/Continental).
+Blocks NOT 16-byte aligned, entropy 5.3–6.5 (lower than AES — may be
+compressed plaintext or a different cipher).  No ODX ECU variant found —
+these FRFs may use a proprietary Bentley format.
+
+Nothing further known.  Not related to any Audi/VW encryption method.
 
 ## DL501 / VL381 (Borg Warner, TriCore — reference only)
 
