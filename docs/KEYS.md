@@ -43,26 +43,41 @@ Hex: 437941323030385a465641477463757873616d
 - Verified on 4G0927158BE (A6/A7 C7, 1,310,208 bytes PERFECT MATCH)
 - Confirmed working on 4H1927158AD (A8 D4 8HP90)
 
-Applies to (Audi flashdaten):
-- 4G0927158 — A6/A7 C7 (EV_TCMAL551211, 289 FRFs)
-- 4H1927158 — A8 D4 (EV_TCMALX51011, 116 FRFs)
+Applies to (Audi flashdaten — confirmed):
+- 4G0927158 — A6/A7 C7 (EV_TCMAL551211)
+- 4G1927158 — A6/A7 C7 variant (EV_TCMAL551211)
+- 4H1927158 — A8 D4 (EV_TCMALX51011)
+- 8K0927158 — A4/A5 B8 ZF 8HP (EV_TCMAL551211) — NOT to be confused with 8K0927155 (VL381)
+- 8K1927158 — A4/A5 B8 variant (EV_TCMAL551211)
+- 8R0927158 — Q5 8R ZF 8HP (EV_TCMAL551211) — NOT to be confused with 8R0927156 (DL501)
+- 8R1927158 — Q5 8R variant (EV_TCMAL551211)
 
-Applies to (Bentley flashdaten — **confirmed, same key, June 2026**):
-- 3W0927158 — Continental GT (EV_TCMAL450211, ~11 FRFs)
-- 3W3927158 — Continental GTC (EV_TCMAL450211, ~15 FRFs)
-- 4W0927158 — Bentayga (EV_TCMAL450211, ~13 FRFs)
-- 3Y0927158 — Flying Spur/Mulsanne (EV_TCMALX51011, ~14 FRFs)
+Applies to (Bentley flashdaten — confirmed):
+- 3W0927158 — Continental GT (EV_TCMAL450211)
+- 3W3927158 — Continental GTC (EV_TCMAL450211)
+- 4W0927158 — Bentayga (EV_TCMAL450211)
+- 3Y0927158 — Flying Spur (EV_TCMALX51011)
 
 Note: AL450 (EV_TCMAL450211) is a ZF 8HP variant found only in Bentley
-flashdaten — same XOR key, same LZZ compression, new ODX variant name.
+flashdaten — same XOR key, same LZZ format as AL551/ALX510.
 
-Total method 0x22 coverage: ~460 FRFs across Audi + Bentley.
+Total method 0x22 coverage: ~560 FRFs across Audi + Bentley.
+
+**Critical part number traps:**
+```
+8K0927155 = VL381 Multitronic CVT (TriCore) — NOT ZF 8HP
+8K0927158 = ZF 8HP AL551 (SH72549)          — YES ZF 8HP ← same prefix, different box
+
+8R0927156 = DL501 S-Tronic (TriCore)        — NOT ZF 8HP
+8R0927158 = ZF 8HP AL551 (SH72549)          — YES ZF 8HP ← same prefix, different box
+```
 
 ### Method 0xAA — AES-128-CBC + LZSS (key UNKNOWN)
 
 Used by 4M0927158 (Q7/Q8 4M), 8W0927158 (B9 S4/S5/SQ5/RS4/RS5),
-and 36A927158 (Bentley Bentayga older).
-All share ODX variant `EV_TCMALX52011_002` — same platform, same key.
+36A927158 (Bentley Bentayga older), 4M8927158 (SQ8/RS Q8),
+4N0927158 (Q8/A7 C8), and 80A927158 (Q5 FY).
+All confirmed EV_TCMALX52011_002 via ODX — same platform, same AES key.
 
 Same SH72549 MCU as method 0x22 variants, but newer bootloader using
 Bosch standard AES encryption (same scheme as DQ381 BL301).
