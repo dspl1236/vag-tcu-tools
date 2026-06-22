@@ -85,27 +85,32 @@ Used by: DQ200, DQ250, DQ400, DL501, DL382, and some DL800 (4T0 Huracan).
 Same 256-byte permutation table algorithm as method 0x01 with LZZ compression
 on top (same LZZ format as ZF 8HP method 0x22).
 
-**Warning — Fake 0x11 variant (verified from flashdaten, June 2026):**
+**Warning — Fake 0x11 variant (verified from Audi + Lamborghini flashdaten, June 2026):**
 Some DL800 / DQ500 units (4S0927155xx, Audi R8) report method `0x11` in ODX
 but actually use AES decryption.
 
-Confirmed from FRF analysis of FL_4S0927155B__3504 and FL_4S0927155S__6001:
-- ODX variant: `EV_TCMDL800041` + `EV_TCMDQ500021`
-- Method tag: `11` in ODX
-- Block alignment: **16-byte aligned** → real AES (not table cipher)
-- Entropy: 7.95+ (AES-level)
-- FD_2 IV identical across variants → same AES key across R8 family
-
-Diagnostic: use block size alignment to distinguish real 0x11 from fake 0x11:
+Diagnostic: block alignment is the definitive test:
 ```
-16-byte aligned  →  AES (fake 0x11 tag)
-NOT 16B aligned  →  Table cipher (real 0x11)
+NOT 16-byte aligned  →  Real 0x11 (table cipher + LZZ)
+16-byte aligned      →  Fake 0x11 (real AES)
 ```
 
-Known fake 0x11 (real AES): 4S0927155xx (Audi R8, DL800/DQ500 combined ODX)
-Known real 0x11 (table + LZZ): 4T0927109x (Lamborghini Huracan) — not in Audi flashdaten
+Confirmed real 0x11 (Lamborghini flashdaten, EV_TCMDL800421):
+  4T0927109A/_ (Huracan):
+    FD_2: 13,982 bytes — NOT 16B-aligned, entropy 7.956
+    FD_4: 199,423 bytes — NOT 16B-aligned, entropy 7.963
+    FD_2 first 8 identical across all variants: 572cee9611104f48
 
-Source: gremlin (NefMoto) + verified from Audi flashdaten, June 2026.
+Confirmed fake 0x11 / real AES (Audi flashdaten, EV_TCMDQ500021):
+  4S0927155B/S (R8):
+    FD_2: 703,232 bytes — 16B-aligned, entropy 7.956
+    FD_3: 46,992 bytes — 16B-aligned, entropy 7.959
+    FD_2 first 8 identical across all variants: df95e2430be70da7
+
+Note: R8 FRFs carry both EV_TCMDL800041 and EV_TCMDQ500021 in ODX —
+a combined DL800+DQ500 file, not a pure DL800 image.
+
+Source: gremlin (NefMoto) + verified from Audi + Lamborghini flashdaten, June 2026.
 
 ## DL501 / VL381 (Borg Warner, TriCore — reference only)
 
