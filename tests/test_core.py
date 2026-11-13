@@ -1,13 +1,14 @@
 """Tests for vag-flash-tools."""
 
 import struct
+
 from core import __version__
+from core.checksum import crc32_fix, crc32_validate
 from core.crypto_aes import AESBlockCrypto
 from core.crypto_xor import XORBlockCrypto
+from core.frf import decrypt_frf, encrypt_frf
 from core.lzss import decompress_lzss
 from core.lzz import decompress_lzz
-from core.checksum import crc32_validate, crc32_fix
-from core.frf import decrypt_frf, encrypt_frf
 
 
 class TestVersion:
@@ -26,7 +27,7 @@ class TestAESCrypto:
         assert dec[:len(data)] == data
 
     def test_dq381_key(self):
-        from platforms.dq381 import BL301_KEY, BL301_IV
+        from platforms.dq381 import BL301_IV, BL301_KEY
         assert BL301_KEY == bytes(range(16))
         assert BL301_IV == bytes(range(0x10, 0x20))
 
@@ -92,7 +93,7 @@ class TestChecksum:
         struct.pack_into(">I", data, 0x38, base)
         struct.pack_into(">I", data, 0x3C, base + len(data) - 1)
         fixed = crc32_fix(data, block_base=base)
-        valid, stored, computed = crc32_validate(
+        valid, _stored, _computed = crc32_validate(
             bytes(fixed), block_base=base)
         assert valid
 

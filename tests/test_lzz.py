@@ -1,5 +1,6 @@
 """LZZ compressor round-trips through the decompressor (ZF 8HP method 0x22)."""
 import random
+
 from core.lzz import compress_lzz, decompress_lzz
 
 

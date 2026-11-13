@@ -14,7 +14,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
-    "ruff>=0.1",
+    "ruff==0.17.5",   # pinned: `ruff check .` default rules drift across releases
 ]
 
 [tool.setuptools.packages.find]
