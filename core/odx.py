@@ -125,7 +125,7 @@ def _parse_odx_inline(odx_str: str, crypto) -> dict[str, bytearray]:
             decrypted = _decrypt_block(raw, method, crypto)
             result = _decompress_block(decrypted, method, decomp_size) if decomp_size else bytearray(decrypted)
             blocks[fd_id] = result
-        except Exception:
+        except Exception:  # noqa: BLE001  (defensive: keep the raw block if decode fails)
             blocks[fd_id + ".encrypted"] = bytearray(raw)
 
     return blocks
@@ -155,7 +155,7 @@ def _parse_odxf(odxf_str: str, bin_files: dict, crypto) -> dict[str, bytearray]:
             decrypted = _decrypt_block(raw, method, crypto)
             result = _decompress_block(decrypted, method, decomp_size)
             blocks[fd_id] = result
-        except Exception:
+        except Exception:  # noqa: BLE001  (defensive: keep the raw block if decode fails)
             blocks[fd_id + ".encrypted"] = bytearray(raw)
 
     return blocks

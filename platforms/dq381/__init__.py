@@ -7,7 +7,7 @@ Vehicles: MK8 GTI, Golf R, 8Y A3/S3, Tiguan, Cupra Formentor.
 from core.crypto_aes import AESBlockCrypto
 
 # --- BL301 Crypto ---
-BL301_KEY = bytes(range(0x00, 0x10))  # 000102030405060708090A0B0C0D0E0F
+BL301_KEY = bytes(range(0x10))  # 000102030405060708090A0B0C0D0E0F
 BL301_IV = bytes(range(0x10, 0x20))   # 101112131415161718191A1B1C1D1E1F
 BL301_CRYPTO = AESBlockCrypto(BL301_KEY, BL301_IV)
 
