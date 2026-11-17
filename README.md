@@ -11,7 +11,7 @@ Built to give back to the community that made this research possible.
 
 | Platform | Vehicles | Encryption | Status |
 |---|---|---|---|
-| **DQ381.2** BL301 | MK8 GTI, Golf R, 8Y S3, Tiguan | AES-128-CBC (method `AA`) | ⚠️ AES OK; `AA` decompress WIP |
+| **DQ381.2** BL301 | MK8 GTI, Golf R, 8Y S3, Tiguan | AES-128-CBC (method `AA`) | ✅ Extractable |
 | **DQ381.2** BL401 | 2022+ MK8 GTI/R, S3 | AES-128-CBC | ⚠️ Key unknown |
 | **ZF 8HP** method 22 | A6/A7 C7, A8 D4; Continental GT/GTC, Bentayga, Flying Spur | 19-byte XOR | ✅ Extractable |
 | **ZF 8HP** method AA | Q7/Q8, B9 S4/S5/RS4/RS5; Bentayga (36A) | AES-128-CBC | ⚠️ Key unknown |

@@ -32,9 +32,9 @@ and unlock mechanisms.
 - Flash blocks: AES-128-CBC
   - Key: `000102030405060708090A0B0C0D0E0F` (trivial sequential)
   - IV:  `101112131415161718191A1B1C1D1E1F` (trivial sequential)
-- Compression: after AES, an inverted-flag LZSS-family stream (flag `00` =
-  literal, `876543` magic); exact framing not yet pinned (neither the 1023 LZSS
-  nor the 2047 LZZ decoder fully decodes it)
+- Compression: VW_Flash **LZSS10** — inverted flags (flag `00` = literal), 6-bit
+  count + 10-bit displacement (1023 window), no bias. Decoded by
+  `core/lzss.decompress_lzss`, verified byte-exact on real firmware
 - ODX method: `AA` (A = compression + A = AES) — confirmed on every DQ381 data
   block in the 2024 flashdaten; the earlier `0A` / "no compression" note was wrong
 - Checksum: CRC32 (zlib), big-endian, stored at CAL offset 0x44
@@ -157,14 +157,14 @@ aligns with boot mode's full-erase-on-key-match behavior.
 | ODX parse | ✅ (ODX) | ✅ (ODX-F) | ✅ (ODX) |
 | Block identify | ✅ | ✅ | ✅ |
 | AES decrypt | ✅ (key known) | ❌ (key unknown) | ❌ (key unknown) |
-| Decompress | ❌ (`AA` = inverted-flag variant; `odx.py` wrongly routes it to the non-inverted 1023 LZSS) | N/A | N/A (no compression) |
+| Decompress | ✅ (`AA` = VW_Flash LZSS10; fixed in `decompress_lzss`) | N/A | N/A (no compression) |
 | CRC32 checksum | ✅ | untested | unknown |
 | Scanner | ✅ (26 tests) | blocked | blocked |
 
 ## FRF Corpus Summary
 
 **VW Flashdaten (2024):**
-- DQ381 TCU software: 13 FRFs (4 BL301 — AES OK but `AA` decompress blocked; 9 BL401 key-unknown)
+- DQ381 TCU software: 13 FRFs (4 BL301 fully extractable; 9 BL401 key-unknown)
 - DQ381 mechatronics: 260 FRFs
 
 **Audi Flashdaten (2024):**
