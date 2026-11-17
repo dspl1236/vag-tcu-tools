@@ -16,6 +16,29 @@ BL301_CRYPTO = AESBlockCrypto(BL301_KEY, BL301_IV)
 # 32-byte read from any physical BL401 TCU recovers it.
 BL401_CRYPTO = None
 
+# Where the AES key/IV sit in a plaintext BOOT read (BL301 and BL401 share this).
+BOOT_KEY_BASE = 0x010200   # BOOT block flash base
+IV_FLASH = 0x010544        # IV,  16 bytes
+KEY_FLASH = 0x010554       # key, 16 bytes
+
+
+def extract_boot_key(boot_dump, base=BOOT_KEY_BASE):
+    """Pull (key, iv) out of a plaintext BOOT dump (DQ381 layout).
+
+    `base` is the flash address the dump starts at — the BOOT block base by
+    default, or the actual start of an arbitrary flash read (e.g. a 32-byte read
+    at 0x010544). Returns (key, iv), 16 bytes each; raises ValueError if the
+    offsets fall outside the dump.
+    """
+    iv_off = IV_FLASH - base
+    key_off = KEY_FLASH - base
+    if not (0 <= iv_off <= len(boot_dump) - 16 and 0 <= key_off <= len(boot_dump) - 16):
+        raise ValueError(
+            f"key/IV offset outside a {len(boot_dump):#x}-byte dump "
+            f"(iv@{iv_off:#x}, key@{key_off:#x}); check `base`"
+        )
+    return bytes(boot_dump[key_off:key_off + 16]), bytes(boot_dump[iv_off:iv_off + 16])
+
 # --- SA2 Scripts ---
 SA2_BL301 = bytes.fromhex("6806814A05876B5F7DD5494C")
 SA2_BL401 = bytes.fromhex(
