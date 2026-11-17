@@ -24,8 +24,14 @@ def crc32_validate(data: bytes, crc_offset: int = 0x44,
     range_end = struct.unpack_from(">I", data, range_end_offset)[0] - block_base
 
     region = bytearray(data[range_start:range_end + 1])
-    for i in range(4):
-        region[crc_offset - range_start + i] = 0x00
+    # Zero the CRC cell only when it lies inside the CRC'd range. On DQ381 CAL
+    # blocks the cell (0x44) sits *before* the range (e.g. 0x100..), so it is
+    # not part of the CRC and must be left untouched -- not zeroed via a
+    # negative region index, which would corrupt the tail of the region.
+    cell = crc_offset - range_start
+    if 0 <= cell <= len(region) - 4:
+        for i in range(4):
+            region[cell + i] = 0x00
 
     computed = zlib.crc32(bytes(region)) & 0xFFFFFFFF
     return (stored == computed, stored, computed)

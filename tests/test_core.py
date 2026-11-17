@@ -114,6 +114,19 @@ class TestChecksum:
             bytes(fixed), block_base=base)
         assert valid
 
+    def test_crc32_validate_crc_cell_before_range(self):
+        """CAL-style: the CRC cell (0x44) sits before the CRC'd range (0x100..),
+        so it is excluded from the checksum, not zeroed via a negative index."""
+        block = bytearray(0x400)
+        base = 0x140200
+        struct.pack_into(">I", block, 0x38, base + 0x100)   # range_start = 0x100
+        struct.pack_into(">I", block, 0x3C, base + 0x3FF)   # range_end = 0x3FF
+        for i in range(0x100, 0x400):
+            block[i] = (i * 7) & 0xFF
+        fixed = crc32_fix(block, block_base=base)
+        valid, _stored, _computed = crc32_validate(bytes(fixed), block_base=base)
+        assert valid
+
 
 class TestPlatformConfigs:
     def test_dq381_addresses(self):
