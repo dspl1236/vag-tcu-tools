@@ -132,12 +132,12 @@ def build_battery():
     """name -> (width_bits, fn)."""
     bat = {}
     for name in _CRC_CATALOG:
-        bat[name] = (_CRC_CATALOG[name][0], (lambda n: (lambda d: _crc(n, d)))(name))
+        bat[name] = (_CRC_CATALOG[name][0], lambda d, n=name: _crc(n, d))
     for w in (16, 32):
         for e in ("le", "be"):
-            bat[f"sum{w}_{e}"] = (w, (lambda w, e: lambda d: _sum(d, w, e))(w, e))
-            bat[f"negsum{w}_{e}"] = (w, (lambda w, e: lambda d: _sum(d, w, e, neg=True))(w, e))
-            bat[f"xor{w}_{e}"] = (w, (lambda w, e: lambda d: _xor(d, w, e))(w, e))
+            bat[f"sum{w}_{e}"] = (w, lambda d, w=w, e=e: _sum(d, w, e))
+            bat[f"negsum{w}_{e}"] = (w, lambda d, w=w, e=e: _sum(d, w, e, neg=True))
+            bat[f"xor{w}_{e}"] = (w, lambda d, w=w, e=e: _xor(d, w, e))
     bat["sum8"] = (8, lambda d: sum(d) & 0xFF)
     bat["negsum8"] = (8, lambda d: (-sum(d)) & 0xFF)
     bat["xor8"] = (8, lambda d: _xor(d, 8, "le"))
@@ -157,9 +157,9 @@ def read_field(seg, off, size, endian):
 def candidate_fields(seg_size, window, wide):
     """Yield (off, size, endian) candidate stored-checksum field positions."""
     if wide:
-        spots = range(0, seg_size)
+        spots = range(seg_size)
     else:
-        spots = list(range(0, window)) + list(range(seg_size - window, seg_size))
+        spots = list(range(window)) + list(range(seg_size - window, seg_size))
     for off in spots:
         for size in (1, 2, 4):          # 1 = CRC-8 (e.g. H2F) / sum8 field
             if off + size <= seg_size:
@@ -269,7 +269,8 @@ def main():
     if not a.dump:
         ap.error("supply a dump, or run --selftest")
 
-    data = open(a.dump, "rb").read()
+    with open(a.dump, "rb") as fh:
+        data = fh.read()
     seg_size = int(a.seg_size, 0)
     segs = [data[i:i + seg_size] for i in range(0, len(data), seg_size)]
     segs = [s for s in segs if len(s) == seg_size]
