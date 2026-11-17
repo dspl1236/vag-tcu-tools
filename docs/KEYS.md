@@ -12,8 +12,11 @@ Key: 000102030405060708090A0B0C0D0E0F
 IV:  101112131415161718191A1B1C1D1E1F
 ```
 
-- ODX method: `0A` (encryption A + LZSS compression via DSG flag)
-- Compression: LZSS (6-bit count + 10-bit displacement, 1023 window)
+- ODX method: `AA` (A = compression + A = AES) — confirmed on every DQ381 data
+  block across the 2024 flashdaten; the earlier `0A` label here was wrong
+- Compression: after AES the block is an inverted-flag LZSS-family stream (flag
+  `00` = literal, `876543` magic); exact framing not yet pinned, and neither the
+  1023 LZSS nor the 2047 LZZ decoder fully decodes it (see PLATFORM_RESEARCH.md)
 - Stored in BOOT block at offset 0x344 (IV) / 0x354 (Key)
 - Flash address: 0x010544 (IV) / 0x010554 (Key)
 - Confirmed across 4 firmware variants (555/557, SW 3260/4161/4162/4260)

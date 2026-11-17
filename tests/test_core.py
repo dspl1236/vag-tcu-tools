@@ -2,6 +2,8 @@
 
 import struct
 
+import pytest
+
 from core import __version__
 from core.checksum import crc32_fix, crc32_validate
 from core.crypto_aes import AESBlockCrypto
@@ -58,6 +60,15 @@ class TestLZSS:
         compressed = bytes([0xFF]) + b"ABCDEFGH"
         result = decompress_lzss(compressed)
         assert result == bytearray(b"ABCDEFGH")
+
+    def test_out_of_range_displacement_raises(self):
+        """A back-reference past the output start fails cleanly, not corrupt.
+
+        Flag 0x00 makes the first token a reference, but nothing has been
+        decoded yet, so any displacement is out of range.
+        """
+        with pytest.raises(ValueError, match="displacement"):
+            decompress_lzss(bytes([0x00, 0x00, 0x05]))
 
 
 class TestLZZ:
