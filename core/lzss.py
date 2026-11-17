@@ -1,16 +1,18 @@
-"""LZSS decompression — 1023-byte sliding window (flag bit set = literal).
+"""LZSS decompression — VW_Flash "LZSS10", 1023-byte sliding window.
 
-Big-endian: 6-bit count + 10-bit displacement.  Based on bri3d/VW_Flash (MIT).
+Inverted flags (flag bit 0 = literal, 1 = back-reference), MSB-first.  Each
+back-reference is a big-endian 16-bit word: 6-bit count (raw) + 10-bit
+displacement.  This is the format DQ381 flash blocks (ODX method 0xAA) decode to
+after AES — confirmed byte-exact on real 2024 flashdaten: the decoded BOOT block
+carries the AES IV/key at their documented offsets (0x344 / 0x354), and every
+block decodes to its exact declared size.
 
-NOTE: DQ381 flash blocks are ODX method 0xAA (AES + compression).  After AES they
-decode to an INVERTED-flag stream (flag 0x00 = literal, 876543 magic) that this
-non-inverted decoder does not handle; the exact DQ381 AA framing is not yet
-pinned (see docs/PLATFORM_RESEARCH.md).
+Based on bri3d/VW_Flash (MIT); cross-checked against lsdlsd88/TCU-FRF-SGO-UNPACKER.
 """
 
 
 def decompress_lzss(data: bytes, output_size: int = 0) -> bytearray:
-    """Decompress LZSS data with 1023-byte window (DQ381 variant).
+    """Decompress VW_Flash LZSS10 (inverted flags, 6-bit count + 10-bit window).
 
     Args:
         data: Compressed input bytes.
@@ -18,31 +20,34 @@ def decompress_lzss(data: bytes, output_size: int = 0) -> bytearray:
 
     Returns:
         Decompressed bytearray.
+
+    Raises:
+        ValueError: on a back-reference whose displacement points before the
+            start of the output (corrupt stream, or wrong decryption key).
     """
     output = bytearray()
     i = 0
     while i < len(data):
+        if output_size and len(output) >= output_size:
+            break
         flag = data[i]
         i += 1
         for bit in range(8):
             if i >= len(data):
                 break
             if output_size and len(output) >= output_size:
-                return output[:output_size]
-            if flag & (1 << (7 - bit)):
+                break
+            if not (flag >> (7 - bit)) & 1:          # 0 = literal
                 output.append(data[i])
                 i += 1
-            else:
+            else:                                     # 1 = back-reference
                 if i + 1 >= len(data):
                     break
-                b0 = data[i]
-                b1 = data[i + 1]
+                word = (data[i] << 8) | data[i + 1]
                 i += 2
-                count = (b0 >> 2) + 3
-                displacement = ((b0 & 0x03) << 8) | b1
-                if displacement == 0:
-                    displacement = 1
-                if displacement > len(output):
+                count = word >> 10                    # 6-bit count, raw
+                displacement = word & 0x3FF           # 10-bit, 1023 window
+                if displacement == 0 or displacement > len(output):
                     raise ValueError(
                         f"LZSS stream corrupt: displacement {displacement} "
                         f"exceeds {len(output)} bytes decoded "

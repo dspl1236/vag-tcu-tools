@@ -56,19 +56,25 @@ class TestXORCrypto:
 
 class TestLZSS:
     def test_all_literal(self):
-        """Flag 0xFF = all 8 bits are literals."""
-        compressed = bytes([0xFF]) + b"ABCDEFGH"
+        """Inverted flags: flag 0x00 = all 8 tokens are literals."""
+        compressed = bytes([0x00]) + b"ABCDEFGH"
         result = decompress_lzss(compressed)
         assert result == bytearray(b"ABCDEFGH")
+
+    def test_back_reference(self):
+        """Flag bit set = back-reference; word 0x0C08 => copy 3 bytes from -8."""
+        compressed = bytes([0x00]) + b"ABCDEFGH" + bytes([0x80, 0x0C, 0x08])
+        result = decompress_lzss(compressed, 11)
+        assert result == bytearray(b"ABCDEFGHABC")
 
     def test_out_of_range_displacement_raises(self):
         """A back-reference past the output start fails cleanly, not corrupt.
 
-        Flag 0x00 makes the first token a reference, but nothing has been
-        decoded yet, so any displacement is out of range.
+        Flag 0x80 makes the first token a reference, but nothing has been
+        decoded yet, so the displacement is out of range.
         """
         with pytest.raises(ValueError, match="displacement"):
-            decompress_lzss(bytes([0x00, 0x00, 0x05]))
+            decompress_lzss(bytes([0x80, 0x00, 0x05]))
 
 
 class TestLZZ:
