@@ -144,3 +144,23 @@ class TestPlatformConfigs:
         from platforms.zf8hp import MEMORY_MAP
         assert MEMORY_MAP["ASW"]["start"] == 0x040080
         assert MEMORY_MAP["CAL_DATA"]["start"] == 0x190000
+
+
+class TestKeyImport:
+    def test_extract_boot_key(self):
+        """Pull the AES key/IV from their plaintext BOOT offsets (0x344/0x354)."""
+        from platforms.dq381 import BOOT_KEY_BASE, extract_boot_key
+        dump = bytearray(0x400)
+        iv = bytes(range(0x10, 0x20))
+        key = bytes(range(0x10))
+        dump[0x344:0x354] = iv
+        dump[0x354:0x364] = key
+        got_key, got_iv = extract_boot_key(bytes(dump), base=BOOT_KEY_BASE)
+        assert got_key == key
+        assert got_iv == iv
+
+    def test_extract_boot_key_out_of_range(self):
+        """A too-small dump fails cleanly rather than slicing garbage."""
+        from platforms.dq381 import extract_boot_key
+        with pytest.raises(ValueError, match="offset"):
+            extract_boot_key(b"\x00" * 16)
