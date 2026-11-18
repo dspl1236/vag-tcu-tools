@@ -32,6 +32,27 @@ The same SH72549 MCU is also found in ZF 8HP45/50/55/70/75/90/95 across
 BMW, Alfa Romeo, Dodge/Ram, Jeep, Maserati, Rolls Royce, and Aston Martin.
 Gen3 ZF 8HP (post-2020) moved to Infineon TC275 TriCore.
 
+### VAG DSG / CVT via SGO table cipher
+
+Several VAG transmission families ship their flash as SGML Object File (`.sgo`)
+containers whose "format 1" blocks use a 256-byte **substitution cipher**, not
+AES or XOR. The tables were recovered by reverse engineering and are ported from
+[lsdlsd88/TCU-FRF-SGO-UNPACKER](https://github.com/lsdlsd88/TCU-FRF-SGO-UNPACKER):
+
+| Family | Transmission | Cipher | Status |
+|---|---|---|---|
+| **DQ250** PQ / MQB | 02E wet 6-spd DSG | table (progressive / early feedback) | ✅ Decodes |
+| **DQ200** PQ / MQB | 0CW/0AM dry 7-spd DSG | table (progressive) | ✅ Decodes |
+| **DL382** | 8W0/4K0 …155/153 7-spd S-Tronic | table (progressive) | ✅ Decodes |
+| **DL501** 0B5 | 7-spd S-Tronic | table (progressive) | ✅ Decodes |
+| **VL381** 0CK | Multitronic CVT | table (progressive) | ✅ Decodes |
+| **DQ400e** 0DD | hybrid DSG | table (progressive) | ✅ Decodes |
+
+The tables are upstream-validated against real TCU reads; this port reproduces
+both ciphers byte-for-byte (covered in the tests). Decoding goes through
+`core/sgo.py` (container) + `core/crypto_table.py` (cipher) +
+`platforms/sgo_tables.py` (tables); drive it with `tools/unpack_sgo.py`.
+
 ## Features
 
 - **FRF extraction** — Decrypt VW/Audi flashdaten `.frf` containers into raw
@@ -43,6 +64,9 @@ Gen3 ZF 8HP (post-2020) moved to Infineon TC275 TriCore.
 - **CRC32 checksum** — Validate and correct DQ381 CAL block checksums
 - **Platform configs** — Flash layouts, SA2 scripts, calibration addresses,
   variant databases
+- **SGO containers** — Parse VAG SGML Object File (`.sgo`) transmission files
+  and decode the DSG/CVT "format 1" substitution cipher, with an optional C
+  accelerator (`core/build_sgo_fast.py`) and a pure-Python fallback
 
 ## Key Discoveries
 
@@ -112,13 +136,18 @@ core/                   Shared infrastructure
   odx.py                ODX/ODX-F flash block parser
   crypto_aes.py         AES-128-CBC
   crypto_xor.py         Repeating XOR
+  crypto_table.py       SGO format-1 substitution cipher (DSG/CVT)
   lzss.py               LZSS (1023 window, DQ381)
   lzz.py                LZZ (2047 window, ZF 8HP)
+  sgo.py                SGML Object File (.sgo) container parser
+  sgo_fast.c / .py      Optional C acceleration for the table ciphers (ctypes)
+  build_sgo_fast.py     Build the C accelerator for this platform
   checksum.py           CRC32 / CRC-CCITT
 
 platforms/
   dq381/                Keys, flash layout, scanner addresses
   zf8hp/                Keys, memory map, variant database
+  sgo_tables.py         Recovered DSG/CVT cipher tables + family map
 
 docs/
   KEYS.md               All known keys — single reference
@@ -126,6 +155,7 @@ docs/
 
 tools/
   recover_aes_key.py    Key verification against known plaintext
+  unpack_sgo.py         Unpack/decode .sgo transmission containers
 ```
 
 ## Installation
@@ -133,6 +163,13 @@ tools/
 ```bash
 pip install -e ".[dev]"
 pytest -q
+```
+
+Optionally build the C accelerator for the SGO table ciphers (not required —
+there is a pure-Python fallback, and the tests pass either way):
+
+```bash
+python -m core.build_sgo_fast
 ```
 
 ## All Known Keys
@@ -164,6 +201,11 @@ Open an issue or PR — or reach out on NefMoto/VWVortex.
 
 - **[bri3d/VW_Flash](https://github.com/bri3d/VW_Flash)** (MIT) — FRF
   decryption, DQ381 AES/LZSS implementation, SA2 seed/key research
+- **[lsdlsd88/TCU-FRF-SGO-UNPACKER](https://github.com/lsdlsd88/TCU-FRF-SGO-UNPACKER)**
+  (MIT) — the SGO v2 parser, the DSG/CVT `.sgo` format-1 substitution-cipher
+  tables, and the C hot loops, all ported here with thanks
+- **calledit** — the original `SGML_Object_File_reader` (`read_sgo.php`) that the
+  SGO parser derives from
 - **[NefMoto community](http://nefariousmotorsports.com/forum/)** — SA2
   opcode documentation, VAG AES key research, and decades of open VW/Audi
   reverse engineering
